@@ -11,13 +11,6 @@ services:
     environment:
       APP_ENV: dev
 
-  pwa:
-    build:
-      context: ./pwa
-      target: api_platform_pwa_dev
-    volumes:
-      - ./pwa:/usr/src/pwa:rw,cached
-
   caddy:
     volumes:
       - ./api/docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
@@ -35,3 +28,9 @@ services:
 
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
