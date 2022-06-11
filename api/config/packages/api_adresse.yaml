@@ -1,0 +1,4 @@
+parameters:
+    app.api_adresse:
+        url: 'https://api-adresse.data.gouv.fr/search/?q='
+        valid_score: 0.6

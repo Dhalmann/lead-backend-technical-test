@@ -5,11 +5,38 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+
+use App\Controller\TagsController;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
-#[ApiResource]
+#[ApiResource(
+    itemOperations: [
+        'get',
+        'put',
+        'patch',
+        'delete',
+        'addTags' =>[
+            'method' => 'POST',
+            'path' => '/order/{id}/addTags',
+            'controller' => TagsController::class,
+            'openapi_context' => [
+                'summary' => 'generate tags for an order',
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type'       => 'object'
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+    ]
+)]
 class Order
 {
     #[ORM\Id]
@@ -35,7 +62,10 @@ class Order
     #[ORM\Column(type: 'integer', nullable: true)]
     private int $total;
 
-    #[ORM\OneToMany(targetEntity: 'OrderLine', mappedBy: 'order')]
+    #[ORM\Column(type: 'string', length: 255, options:['default'=>''])]
+    private string $tags='';
+
+    #[ORM\OneToMany(targetEntity: 'OrderLine', mappedBy: 'order', fetch: 'EAGER')]
     private $lines;
 
     public function __construct()
@@ -113,7 +143,17 @@ class Order
         $this->shippingCountry = $shippingCountry;
     }
 
-    public function getLines(): ArrayCollection
+    public function getTags(): string
+    {
+        return $this->tags;
+    }
+
+    public function setTags(?string $tags): void
+    {
+        $this->tags = $tags;
+    }
+
+    public function getLines(): Collection
     {
         return $this->lines;
     }

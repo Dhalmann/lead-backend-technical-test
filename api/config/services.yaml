@@ -22,4 +22,15 @@ services:
             - '../src/Tests/'
 
     # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    # please note that last definitions always *replace* previous ones 
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
+    App\Manager\:
+        resource: '../src/Manager/'
+        tags: ['controller.service_arguments']
+
+    App\Services\AddressService\AddressService:
+        arguments: 
+            $apiAdresseConfig: '%app.api_adresse%'
